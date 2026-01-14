@@ -50,7 +50,10 @@ export const Dashboard = () => {
 
       const id = uuid4()
       setTodo([...todo, { id: id, task: text, description: description }]);
-
+// Add a useEffect that runs whenever todo changes
+//       useEffect(() => {
+//   localStorage.setItem("todo", JSON.stringify(todo));
+// }, [todo]);
       const data = localStorage.getItem("todo")
       const parsed = JSON.parse(data)
       parsed.push({ id: id, task: text, description: description });
@@ -74,6 +77,7 @@ export const Dashboard = () => {
   }
   const handleYes = () => {
     const filteredData = todo.filter((_) => _.id !== item);
+    // Add a useEffect that runs whenever todo changes
     localStorage.setItem("todo", JSON.stringify(filteredData))
     
     
@@ -151,6 +155,7 @@ export const Dashboard = () => {
                         ? (task.completed = false)
                         : (task.completed = true);
                       setTodo([...todo]);
+                      // Add a useEffect that runs whenever todo changes 
                       localStorage.setItem("todo", JSON.stringify(todo));
                     }}
                   />
