@@ -9,16 +9,22 @@ import CloseIcon from "@mui/icons-material/Close";
 
 export const Dashboard = () => {
 
-  const [todo, setTodo] = useState([]);
+  const [todo, setTodo] = useState(() => {
+  try {
+    const value = localStorage.getItem("todo");
+    const parsed = value ? JSON.parse(value) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+});
   const [item, setItem] = useState("")
 
-  useEffect(() => {
-    const gotten = localStorage.getItem("todo")
-    const parsed = JSON.parse(gotten)
-    setTodo(parsed)
-    
-    
-},[])
+
+
+useEffect(()=>{
+  localStorage.setItem("todo", JSON.stringify(todo))
+},[todo])
 
   const [addDialog, setAddDialog] = useState(false)
   const [removeDialog, setRemoveDialog] = useState(false)
@@ -41,6 +47,7 @@ export const Dashboard = () => {
      setDescription("");
   }
   
+
   
   const handleSave = () => {
 
@@ -50,16 +57,7 @@ export const Dashboard = () => {
 
       const id = uuid4()
       setTodo([...todo, { id: id, task: text, description: description }]);
-// Add a useEffect that runs whenever todo changes
-//       useEffect(() => {
-//   localStorage.setItem("todo", JSON.stringify(todo));
-// }, [todo]);
-      const data = localStorage.getItem("todo")
-      const parsed = JSON.parse(data)
-      parsed.push({ id: id, task: text, description: description });
-      localStorage.setItem("todo", JSON.stringify(parsed))
-    
-    
+   
 
     
 
@@ -77,8 +75,6 @@ export const Dashboard = () => {
   }
   const handleYes = () => {
     const filteredData = todo.filter((_) => _.id !== item);
-    // Add a useEffect that runs whenever todo changes
-    localStorage.setItem("todo", JSON.stringify(filteredData))
     
     
     setTodo(filteredData);
@@ -138,7 +134,7 @@ export const Dashboard = () => {
         </div>
 
         <div className=" container">
-          {todo.map((task) => {
+          {todo?.map((task) => {
             return (
               <div
                 key={task.id}
@@ -148,15 +144,13 @@ export const Dashboard = () => {
                   
                     type="checkbox"
                     className=" absolute right-9 top-4 cursor-pointer checkbox "
-                    checked={task.completed ? true : false}
+                    checked={!!task.completed}
                     
                     onClick={() => {
                       task.completed
                         ? (task.completed = false)
                         : (task.completed = true);
                       setTodo([...todo]);
-                      // Add a useEffect that runs whenever todo changes 
-                      localStorage.setItem("todo", JSON.stringify(todo));
                     }}
                   />
 
